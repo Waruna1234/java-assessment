@@ -27,7 +27,7 @@ class HelloControllerTest {
 
         mockMvc.perform(get("/hello-world?name=alice"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Hello Alice"));
+                .andExpect(jsonPath("$.message").value("Hello Alice"));
     }
 
     @Test
@@ -37,11 +37,13 @@ class HelloControllerTest {
 
         mockMvc.perform(get("/hello-world?name=waruna"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Input"));
+                .andExpect(jsonPath("$.error").value("Invalid Input"));
     }
 
     @Test
     void testMissingName_Returns400() throws Exception {
-        mockMvc.perform(get("/hello-world")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/hello-world"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Invalid Input"));
     }
 }

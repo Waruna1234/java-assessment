@@ -1,5 +1,7 @@
 package com.example.Assessment.Controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,19 +21,19 @@ public class HelloController {
     }
 
     @GetMapping
-    public ResponseEntity<?> hello(@RequestParam String name){
-        
+    public ResponseEntity<?> hello(@RequestParam(required = false) String name){
+
+        if(name == null || name.trim().isEmpty()){
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid Input"));
+        }
 
         String response = helloService.generateMessage(name);
 
         if(response == null){
-            return ResponseEntity.badRequest().body(
-                    "Invalid Input"
-            );
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid Input"));
         }
 
-        return ResponseEntity.ok(response);
-
+        return ResponseEntity.ok(Map.of("message", response));
 
     }
     
